@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import altair as alt
 from datetime import datetime
 
 st.set_page_config(page_title="Wealth Planning Calculator", layout="wide")
@@ -35,20 +36,20 @@ with st.sidebar:
     )
     
     current_assets = st.number_input(
-        "Current Assets ($)",
+        "Current Assets",
         min_value=0.0,
         value=100000.0,
         step=1000.0
     )
     
     monthly_contribution = st.number_input(
-        "Monthly Contribution ($)",
+        "Monthly Contribution",
         min_value=0.0,
         value=1000.0,
         step=100.0
     )
     
-    annual_contribution_increase = st.slider(
+    annual_contribution_increase = st.number_input(
         "Annual Increase in Monthly Contribution (%)",
         min_value=0.0,
         max_value=100.0,
@@ -56,7 +57,7 @@ with st.sidebar:
         step=0.1
     ) / 100
     
-    expected_monthly_return = st.slider(
+    expected_monthly_return = st.number_input(
         "Expected Monthly Return (%)",
         min_value=0.0,
         max_value=50.0,
@@ -65,13 +66,13 @@ with st.sidebar:
     ) / 100
     
     current_monthly_expense = st.number_input(
-        "Current Monthly Expense ($)",
+        "Current Monthly Expense",
         min_value=0.0,
         value=3000.0,
         step=100.0
     )
     
-    expected_inflation = st.slider(
+    expected_inflation = st.number_input(
         "Expected Inflation (%)",
         min_value=0.0,
         max_value=20.0,
@@ -211,17 +212,48 @@ with col1:
             status = "Sustainable" if final_corpus > 0 else "Unsustainable"
             st.metric("Plan Status", status)
         
-        # Add visualization
-        st.subheader("Corpus Growth Over Time")
-        
-        chart_data = df_results[['Year', 'Year End Corpus']].copy()
-        chart_data['Retirement'] = retirement_age
-        
-        st.line_chart(
-            data=df_results.set_index('Year')[['Year End Corpus']],
-            use_container_width=True
+        # Timeline for investment horizon
+        st.subheader("Investment Horizon Timeline")
+        retirement_year = datetime.now().year + (retirement_age - current_age)
+        timeline = alt.Chart(df_results).mark_line(point=True).encode(
+            x=alt.X('Year:O', title='Year'),
+            y=alt.Y('Age', title='Age'),
+            tooltip=['Year', 'Age']
+        ).properties(height=250)
+        retirement_rule = alt.Chart(pd.DataFrame({'Year':[retirement_year]})).mark_rule(color='orange', strokeDash=[4,4]).encode(
+            x='Year:O'
         )
-        
+        st.altair_chart(timeline + retirement_rule, use_container_width=True)
+
+        # Cashflow chart: positive contributions until retirement, negative withdrawals after retirement
+        st.subheader("Cashflow (Contributions vs Withdrawals)")
+        df_cashflow = df_results.copy()
+        df_cashflow['Annual Expense'] = -df_cashflow['Annual Expense']
+        cashflow = alt.Chart(df_cashflow).transform_fold(
+            ['Annual Contribution', 'Annual Expense'],
+            as_=['Type', 'Amount']
+        ).mark_line(point=True).encode(
+            x=alt.X('Year:O', title='Year'),
+            y=alt.Y('Amount', title='Cashflow'),
+            color='Type:N',
+            tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
+        ).properties(height=300)
+        st.altair_chart(cashflow, use_container_width=True)
+
+        # Corpus area chart showing positive and negative territory
+        st.subheader("Corpus Projection")
+        corpus_area = alt.Chart(df_results).mark_area(opacity=0.4).encode(
+            x=alt.X('Year:O', title='Year'),
+            y=alt.Y('Year End Corpus', title='Corpus'),
+            color=alt.condition(
+                alt.datum['Year End Corpus'] >= 0,
+                alt.value('#1f77b4'),
+                alt.value('#d62728')
+            ),
+            tooltip=['Year', alt.Tooltip('Year End Corpus', format='$,.2f')]
+        ).properties(height=300)
+        st.altair_chart(corpus_area, use_container_width=True)
+
         # Download option
         csv = df_display.to_csv(index=False)
         st.download_button(
