@@ -172,9 +172,9 @@ with col2:
     **Retirement Age:** {retirement_age}  
     **Years to Retirement:** {retirement_age - current_age}  
     **Planning Horizon:** {planning_horizon} years  
-    **Starting Corpus:** ${current_assets:,.2f}  
-    **Monthly Contribution:** ${monthly_contribution:,.2f}  
-    **Monthly Expense:** ${current_monthly_expense:,.2f}  
+    **Starting Corpus:** {current_assets:,.2f}  
+    **Monthly Contribution:** {monthly_contribution:,.2f}  
+    **Monthly Expense:** {current_monthly_expense:,.2f}  
     **Expected Return:** {expected_monthly_return*100:.2f}%  
     **Expected Inflation:** {expected_inflation*100:.2f}%
     """)
@@ -209,10 +209,10 @@ with col1:
         col_a, col_b, col_c = st.columns(3)
         
         with col_a:
-            st.metric("Final Corpus", f"${final_corpus:,.2f}")
+            st.metric("Final Corpus", f"{final_corpus:,.2f}")
         
         with col_b:
-            st.metric("Peak Corpus", f"${max_corpus:,.2f}")
+            st.metric("Peak Corpus", f"{max_corpus:,.2f}")
         
         with col_c:
             color = "green" if final_corpus > 0 else "red"
