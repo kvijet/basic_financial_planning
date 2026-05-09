@@ -80,6 +80,9 @@ with st.sidebar:
         step=0.1
     ) / 100
 
+    # Calculate Projection button at the end of sidebar
+    calculate_button = st.button("Calculate Projection", type="primary")
+
 
 def calculate_wealth_plan(current_age, retirement_age, planning_horizon, current_assets,
                          monthly_contribution, annual_contribution_increase, expected_monthly_return,
@@ -169,12 +172,16 @@ with col2:
     **Retirement Age:** {retirement_age}  
     **Years to Retirement:** {retirement_age - current_age}  
     **Planning Horizon:** {planning_horizon} years  
-    **Starting Corpus:** ${current_assets:,.2f}
+    **Starting Corpus:** ${current_assets:,.2f}  
+    **Monthly Contribution:** ${monthly_contribution:,.2f}  
+    **Monthly Expense:** ${current_monthly_expense:,.2f}  
+    **Expected Return:** {expected_monthly_return*100:.2f}%  
+    **Expected Inflation:** {expected_inflation*100:.2f}%
     """)
 
 with col1:
     # Calculate and display results
-    if st.button("Calculate Projection", type="primary"):
+    if calculate_button:
         df_results = calculate_wealth_plan(
             current_age, retirement_age, planning_horizon, current_assets,
             monthly_contribution, annual_contribution_increase, expected_monthly_return,
@@ -185,10 +192,10 @@ with col1:
         
         # Format the dataframe for display
         df_display = df_results.copy()
-        df_display['Annual Contribution'] = df_display['Annual Contribution'].apply(lambda x: f"${x:,.2f}")
-        df_display['Interest Income'] = df_display['Interest Income'].apply(lambda x: f"${x:,.2f}")
-        df_display['Annual Expense'] = df_display['Annual Expense'].apply(lambda x: f"${x:,.2f}")
-        df_display['Year End Corpus'] = df_display['Year End Corpus'].apply(lambda x: f"${x:,.2f}")
+        df_display['Annual Contribution'] = df_display['Annual Contribution'].apply(lambda x: f"{x:,.2f}")
+        df_display['Interest Income'] = df_display['Interest Income'].apply(lambda x: f"{x:,.2f}")
+        df_display['Annual Expense'] = df_display['Annual Expense'].apply(lambda x: f"{x:,.2f}")
+        df_display['Year End Corpus'] = df_display['Year End Corpus'].apply(lambda x: f"{x:,.2f}")
         
         st.dataframe(df_display, use_container_width=True, hide_index=True)
         
@@ -234,7 +241,7 @@ with col1:
             as_=['Type', 'Amount']
         ).mark_line(point=True).encode(
             x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Amount', title='Cashflow'),
+            y=alt.Y('Amount', title='Cashflow ($)', format='$,.0f'),
             color='Type:N',
             tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
         ).properties(height=300)
@@ -244,7 +251,7 @@ with col1:
         st.subheader("Corpus Projection")
         corpus_area = alt.Chart(df_results).mark_area(opacity=0.4).encode(
             x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Year End Corpus', title='Corpus'),
+            y=alt.Y('Year End Corpus', title='Corpus ($)', format='$,.0f'),
             color=alt.condition(
                 alt.datum['Year End Corpus'] >= 0,
                 alt.value('#1f77b4'),
