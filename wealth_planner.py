@@ -232,33 +232,33 @@ with col1:
         )
         st.altair_chart(timeline + retirement_rule, use_container_width=True)
 
-        # Cashflow chart: positive contributions until retirement, negative withdrawals after retirement
-        st.subheader("Cashflow (Contributions vs Withdrawals)")
+        # Cashflow chart: positive contributions until retirement, negative expenses after retirement
+        st.subheader("Cashflow by Year")
         df_cashflow = df_results.copy()
         df_cashflow['Annual Expense'] = -df_cashflow['Annual Expense']
         cashflow = alt.Chart(df_cashflow).transform_fold(
             ['Annual Contribution', 'Annual Expense'],
             as_=['Type', 'Amount']
-        ).mark_line(point=True).encode(
+        ).mark_bar().encode(
             x=alt.X('Year:O', title='Year'),
             y=alt.Y('Amount', title='Cashflow ($)', format='$,.0f'),
-            color='Type:N',
+            color=alt.Color('Type:N', scale=alt.Scale(range=['#1f77b4', '#d62728'])),
             tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
-        ).properties(height=300)
+        ).properties(height=320)
         st.altair_chart(cashflow, use_container_width=True)
 
-        # Corpus area chart showing positive and negative territory
-        st.subheader("Corpus Projection")
-        corpus_area = alt.Chart(df_results).mark_area(opacity=0.4).encode(
+        # Corpus area chart with contributions and interest earned
+        st.subheader("Corpus Build-Up")
+        df_corpus = df_results.copy()
+        corpus_area = alt.Chart(df_corpus).transform_fold(
+            ['Annual Contribution', 'Interest Income'],
+            as_=['Type', 'Amount']
+        ).mark_area(opacity=0.5).encode(
             x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Year End Corpus', title='Corpus ($)', format='$,.0f'),
-            color=alt.condition(
-                alt.datum['Year End Corpus'] >= 0,
-                alt.value('#1f77b4'),
-                alt.value('#d62728')
-            ),
-            tooltip=['Year', alt.Tooltip('Year End Corpus', format='$,.2f')]
-        ).properties(height=300)
+            y=alt.Y('Amount', title='Amount ($)', stack='zero', format='$,.0f'),
+            color=alt.Color('Type:N', scale=alt.Scale(range=['#1f77b4', '#2ca02c'])),
+            tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
+        ).properties(height=320)
         st.altair_chart(corpus_area, use_container_width=True)
 
         # Download option
