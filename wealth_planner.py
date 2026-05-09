@@ -31,22 +31,22 @@ with st.sidebar:
         "Planning Horizon (years)",
         min_value=1,
         max_value=100,
-        value=40,
+        value=60,
         step=1
     )
     
     current_assets = st.number_input(
         "Current Assets",
         min_value=0.0,
-        value=100000.0,
+        value=1000000.0,
         step=1000.0
     )
     
     monthly_contribution = st.number_input(
         "Monthly Contribution",
         min_value=0.0,
-        value=1000.0,
-        step=100.0
+        value=50000.0,
+        step=5000.0
     )
     
     annual_contribution_increase = st.number_input(
@@ -68,8 +68,8 @@ with st.sidebar:
     current_monthly_expense = st.number_input(
         "Current Monthly Expense",
         min_value=0.0,
-        value=3000.0,
-        step=100.0
+        value=75000.0,
+        step=5000.0
     )
     
     expected_inflation = st.number_input(
@@ -218,48 +218,6 @@ with col1:
             color = "green" if final_corpus > 0 else "red"
             status = "Sustainable" if final_corpus > 0 else "Unsustainable"
             st.metric("Plan Status", status)
-        
-        # Timeline for investment horizon
-        st.subheader("Investment Horizon Timeline")
-        retirement_year = datetime.now().year + (retirement_age - current_age)
-        timeline = alt.Chart(df_results).mark_line(point=True).encode(
-            x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Age', title='Age'),
-            tooltip=['Year', 'Age']
-        ).properties(height=250)
-        retirement_rule = alt.Chart(pd.DataFrame({'Year':[retirement_year]})).mark_rule(color='orange', strokeDash=[4,4]).encode(
-            x='Year:O'
-        )
-        st.altair_chart(timeline + retirement_rule, use_container_width=True)
-
-        # Cashflow chart: positive contributions until retirement, negative expenses after retirement
-        st.subheader("Cashflow by Year")
-        df_cashflow = df_results.copy()
-        df_cashflow['Annual Expense'] = -df_cashflow['Annual Expense']
-        cashflow = alt.Chart(df_cashflow).transform_fold(
-            ['Annual Contribution', 'Annual Expense'],
-            as_=['Type', 'Amount']
-        ).mark_bar().encode(
-            x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Amount', title='Cashflow ($)', format='$,.0f'),
-            color=alt.Color('Type:N', scale=alt.Scale(range=['#1f77b4', '#d62728'])),
-            tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
-        ).properties(height=320)
-        st.altair_chart(cashflow, use_container_width=True)
-
-        # Corpus area chart with contributions and interest earned
-        st.subheader("Corpus Build-Up")
-        df_corpus = df_results.copy()
-        corpus_area = alt.Chart(df_corpus).transform_fold(
-            ['Annual Contribution', 'Interest Income'],
-            as_=['Type', 'Amount']
-        ).mark_area(opacity=0.5).encode(
-            x=alt.X('Year:O', title='Year'),
-            y=alt.Y('Amount', title='Amount ($)', stack='zero', format='$,.0f'),
-            color=alt.Color('Type:N', scale=alt.Scale(range=['#1f77b4', '#2ca02c'])),
-            tooltip=['Year', 'Type', alt.Tooltip('Amount', format='$,.2f')]
-        ).properties(height=320)
-        st.altair_chart(corpus_area, use_container_width=True)
 
         # Download option
         csv = df_display.to_csv(index=False)
