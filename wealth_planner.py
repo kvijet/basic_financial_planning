@@ -124,13 +124,13 @@ def calculate_wealth_plan(current_age, retirement_age, planning_horizon, current
         else:
             annual_expense = 0
         
-        # Calculate interest income on previous year's corpus only
+        # Calculate interest income on previous year's corpus only with monthly compounding
         # (Contribution is made at end of year, so no interest on it)
-        interest_income = corpus * expected_monthly_return
+        interest_income = corpus * (((1 + expected_monthly_return) ** 12) - 1)
         
         # Calculate year end corpus
         # Year end balance = previous year corpus + interest earned + new contribution - annual expenses
-        new_corpus = corpus + interest_income + annual_contribution - annual_expense
+        new_corpus = corpus * ((1 + expected_monthly_return) ** 12) + annual_contribution - annual_expense
         
         # Ensure corpus doesn't go negative (but allow it for demonstration)
         # Uncomment next line if you want to stop at 0
