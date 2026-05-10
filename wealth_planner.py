@@ -126,11 +126,13 @@ def calculate_wealth_plan(current_age, retirement_age, planning_horizon, current
             # Next years: continues to grow with inflation
             annual_expense = (current_monthly_expense * 12) * ((1 + expected_inflation) ** years_from_current)
         
-        # Calculate interest income on previous corpus + current contribution
-        interest_income = (corpus + annual_contribution) * expected_monthly_return
+        # Calculate interest income on previous year's corpus only
+        # (Contribution is made at end of year, so no interest on it)
+        interest_income = corpus * expected_monthly_return
         
         # Calculate year end corpus
-        new_corpus = (corpus + annual_contribution) * (1 + expected_monthly_return) - annual_expense
+        # Year end balance = previous year corpus + interest earned + new contribution - annual expenses
+        new_corpus = corpus + interest_income + annual_contribution - annual_expense
         
         # Ensure corpus doesn't go negative (but allow it for demonstration)
         # Uncomment next line if you want to stop at 0
