@@ -110,21 +110,19 @@ def calculate_wealth_plan(current_age, retirement_age, planning_horizon, current
         age = current_age + year_index
         
         # Calculate annual contribution
-        if age < retirement_age:
+        if age <= retirement_age:
             annual_contribution = current_monthly_contrib * 12
         else:
             annual_contribution = 0
         
         # Calculate annual expense
-        if age < retirement_age:
-            annual_expense = 0
-        else:
+        if age > retirement_age:
             # Years from current year (for inflation adjustment)
             years_from_current = age - current_age
-            # Retirement expense = current monthly expense * 12, adjusted for inflation from now until each year
-            # First retirement year: (current_monthly_expense * 12) * (1 + inflation)^years_to_retirement
-            # Next years: continues to grow with inflation
+            # Expense starts the year after retirement
             annual_expense = (current_monthly_expense * 12) * ((1 + expected_inflation) ** years_from_current)
+        else:
+            annual_expense = 0
         
         # Calculate interest income on previous year's corpus only
         # (Contribution is made at end of year, so no interest on it)
