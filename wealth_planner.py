@@ -57,13 +57,14 @@ with st.sidebar:
         step=0.1
     ) / 100
     
-    expected_monthly_return = st.number_input(
-        "Expected Monthly Return (%)",
+    expected_annual_return = st.number_input(
+        "Expected Annual Return (%)",
         min_value=0.0,
-        max_value=50.0,
+        max_value=100.0,
         value=10.0,
         step=0.1
     ) / 100
+    expected_monthly_return = (1 + expected_annual_return) ** (1 / 12) - 1
     
     current_monthly_expense = st.number_input(
         "Current Monthly Expense",
@@ -177,7 +178,7 @@ with col2:
     **Starting Corpus:** {current_assets:,.2f}  
     **Monthly Contribution:** {monthly_contribution:,.2f}  
     **Monthly Expense:** {current_monthly_expense:,.2f}  
-    **Expected Return:** {expected_monthly_return*100:.2f}%  
+    **Expected Annual Return:** {expected_annual_return*100:.2f}%  
     **Expected Inflation:** {expected_inflation*100:.2f}%
     """)
 
