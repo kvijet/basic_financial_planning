@@ -200,7 +200,7 @@ with col1:
         df_display['Annual Expense'] = df_display['Annual Expense'].apply(lambda x: f"{x:,.2f}")
         df_display['Year End Corpus'] = df_display['Year End Corpus'].apply(lambda x: f"{x:,.2f}")
         
-        st.dataframe(df_display, use_container_width=True, hide_index=True)
+        # st.dataframe(df_display, use_container_width=True, hide_index=True)
         
         # # Key insights
         # st.subheader("Key Insights")
