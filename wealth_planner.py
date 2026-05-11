@@ -299,6 +299,24 @@ with col1:
         wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
         wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
+        # After wealth_plan dataframe is created
+        final_balance = wealth_plan["Closing Balance"].iloc[-1]
+        run_out_months = wealth_plan[wealth_plan["Closing Balance"] == 0]["Month"]
+
+        if not run_out_months.empty:
+            run_out_age = current_age + run_out_months.iloc[0] // 12
+            years_before_end = planning_horizon - (run_out_months.iloc[0] // 12)
+            st.warning(
+                f"⚠️ You will run out of money at age {run_out_age}, "
+                f"which is {years_before_end} years before the end of your plan."
+            )
+        else:
+            st.success(
+                f"✅ At the end of {planning_horizon} years, "
+                f"you will still have {final_balance:,.2f} left."
+            )
+
+
         # Display in Streamlit
         st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
