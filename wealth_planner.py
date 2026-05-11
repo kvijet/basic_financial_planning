@@ -316,6 +316,7 @@ with col1:
                 f"you will still have {final_balance:,.2f} left."
             )
 
+<<<<<<< HEAD
 
         # --- What-If Scenarios ---
         whatif_button = st.button("🔮 Show What-If Scenarios")
@@ -379,6 +380,8 @@ with col1:
             st.write(f"1️⃣ With the same contribution, the maximum sustainable monthly expense is **{sustainable_expense:,}**")
             st.write(f"2️⃣ To sustain your current expense, you need a monthly contribution of **{required_contribution:,}** (with step-up applied)")
             st.write(f"3️⃣ If you keep the same expense and contribution, you should retire at age **{new_ret_age}**")
+=======
+>>>>>>> parent of 6e37531 (whatif scenario)
 =======
 >>>>>>> parent of 6e37531 (whatif scenario)
 =======
