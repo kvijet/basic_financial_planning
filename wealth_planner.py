@@ -200,7 +200,7 @@ with col1:
         df_display['Annual Expense'] = df_display['Annual Expense'].apply(lambda x: f"{x:,.2f}")
         df_display['Year End Corpus'] = df_display['Year End Corpus'].apply(lambda x: f"{x:,.2f}")
         
-        # st.dataframe(df_display, use_container_width=True, hide_index=True)
+        st.dataframe(df_display, use_container_width=True, hide_index=True)
         
         # # Key insights
         # st.subheader("Key Insights")
@@ -291,8 +291,16 @@ with col1:
             "Deficit": deficit
         })
 
+        wealth_plan_display = wealth_plan.copy()
+        wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
+
         # Display in Streamlit
-        st.dataframe(wealth_plan)
+        st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
         # Download option
         csv = df_display.to_csv(index=False)
