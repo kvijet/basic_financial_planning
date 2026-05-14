@@ -318,8 +318,13 @@ with col1:
 
 
         # --- What-If Scenarios ---
-        whatif_button = st.button("🔮 Show What-If Scenarios")
-        if whatif_button:
+        if "show_whatif" not in st.session_state:
+            st.session_state.show_whatif = False
+        
+        if st.button("🔮 Show What-If Scenarios"):
+            st.session_state.show_whatif = not st.session_state.show_whatif
+        
+        if st.session_state.show_whatif:
             def run_plan(monthly_contr, monthly_exp, retirement_age_override=None):
                 total_months = planning_horizon * 12
                 retirement_month = ((retirement_age_override or retirement_age) - current_age) * 12
