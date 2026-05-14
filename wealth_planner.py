@@ -181,6 +181,9 @@ with col2:
     **Expected Annual Return:** {expected_annual_return*100:.2f}%  
     **Expected Inflation:** {expected_inflation*100:.2f}%
     """)
+    
+    if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
+        st.switch_page("pages/1_SIP_Calculator.py")
 
 with col1:
     # Calculate and display results
@@ -380,6 +383,10 @@ with col1:
         st.write(f"1️⃣ With the same contribution, the maximum sustainable monthly expense is **{sustainable_expense:,}**")
         st.write(f"2️⃣ To sustain your current expense, you need a monthly contribution of **{required_contribution:,}** (with step-up applied)")
         st.write(f"3️⃣ If you keep the same expense and contribution, you should retire at age **{new_ret_age}**")
+        
+        st.divider()
+        if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
+            st.switch_page("pages/1_SIP_Calculator.py")
 
         # Download option
         csv = df_display.to_csv(index=False)
