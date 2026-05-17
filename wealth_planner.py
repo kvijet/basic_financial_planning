@@ -40,7 +40,7 @@ with st.sidebar:
         min_value=0.0,
         value=1000000.0,
         step=1000.0,
-        format ="{.2f}",
+        format =".2f",
         help="The total value of your current savings and investments that will be used as the starting point for your wealth projection."
     )
     
