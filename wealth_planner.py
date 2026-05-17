@@ -202,12 +202,20 @@ with col1:
 
         ages=[]
         contribution=[]
+        running_expense = []
         contr = monthly_contribution
+        run_expense = current_monthly_expense
 
         for m in wealth_df.Month:
                 if m == 1:
                     age = current_age
                     contr = monthly_contribution
+
+                if m <= retirement_month:
+                    running_expense.append(0)
+                elif m > retirement_month:
+                    running_expense.append(run_expense)
+
 
                 elif m % 12 == 1:
                     age += 1
@@ -219,6 +227,8 @@ with col1:
                 # else keep the same age
                 ages.append(age)
                 contribution.append(contr)
+                running_expense.append(run_expense)
+                run_expense *= (1 + expected_inflation/12)  # Adjust for
 
         wealth_df['Age']=ages
         wealth_df['Contribution']=contribution
