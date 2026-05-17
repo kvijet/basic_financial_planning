@@ -56,8 +56,8 @@ with st.sidebar:
         "Annual Increase in Monthly Contribution (%)",
         min_value=0.0,
         max_value=100.0,
-        value=3.0,
-        step=1,
+        value=5.0,
+        step=1.0,
         help="The percentage by which your monthly contribution will increase each year."
     ) / 100
     
