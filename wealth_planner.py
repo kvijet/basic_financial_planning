@@ -259,8 +259,25 @@ with col1:
             # Update balance for next iteration
             balance = wealth_df.at[i, 'Closing Balance']
 
+        wealth_plan_display = wealth_df.copy()
+        wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
+        wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
         st.dataframe(wealth_df, use_container_width=True, hide_index=True)
+
+        # Download option
+        csv = wealth_plan_display.to_csv(index=False)
+        st.download_button(
+            label="Download Projection (CSV)",
+            data=csv,
+            file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
+            mime="text/csv",
+            on_click="ignore"
+        )        
 
         # # Initialize lists for each column
         # months = []
