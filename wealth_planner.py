@@ -192,36 +192,7 @@ with col1:
             current_monthly_expense, expected_inflation
         )
         
-        st.subheader("Wealth Projection Table")
-        
-        # Format the dataframe for display
-        df_display = df_results.copy()
-        df_display['Annual Contribution'] = df_display['Annual Contribution'].apply(lambda x: f"{x:,.2f}")
-        df_display['Interest Income'] = df_display['Interest Income'].apply(lambda x: f"{x:,.2f}")
-        df_display['Annual Expense'] = df_display['Annual Expense'].apply(lambda x: f"{x:,.2f}")
-        df_display['Year End Corpus'] = df_display['Year End Corpus'].apply(lambda x: f"{x:,.2f}")
-        
-        # st.dataframe(df_display, use_container_width=True, hide_index=True)
-        
-        # # Key insights
-        # st.subheader("Key Insights")
-        
-        # final_corpus = df_results['Year End Corpus'].iloc[-1]
-        # max_corpus = df_results['Year End Corpus'].max()
-        # min_corpus = df_results['Year End Corpus'].min()
-        
-        # col_a, col_b, col_c = st.columns(3)
-        
-        # with col_a:
-        #     st.metric("Final Corpus", f"{final_corpus:,.2f}")
-        
-        # with col_b:
-        #     st.metric("Peak Corpus", f"{max_corpus:,.2f}")
-        
-        # with col_c:
-        #     color = "green" if final_corpus > 0 else "red"
-        #     status = "Sustainable" if final_corpus > 0 else "Unsustainable"
-        #     st.metric("Plan Status", status)
+        st.subheader("Wealth Projection Table")        
 
         total_months = planning_horizon * 12
         retirement_month = (retirement_age - current_age) * 12
@@ -323,7 +294,7 @@ with col1:
 
 
         # Download option
-        csv = df_display.to_csv(index=False)
+        csv = wealth_plan_display.to_csv(index=False)
         st.download_button(
             label="Download Projection (CSV)",
             data=csv,
