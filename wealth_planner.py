@@ -40,7 +40,6 @@ with st.sidebar:
         min_value=0.0,
         value=1000000.0,
         step=1000.0,
-        format =".2f",
         help="The total value of your current savings and investments that will be used as the starting point for your wealth projection."
     )
     
@@ -49,7 +48,6 @@ with st.sidebar:
         min_value=0.0,
         value=50000.0,
         step=5000.0,
-        # format ="{x:,.2f}",
         help="The amount you plan to contribute to your wealth every month until retirement. This can be adjusted for annual increases in the next input."
     )
     
@@ -77,7 +75,6 @@ with st.sidebar:
         min_value=0.0,
         value=75000.0,
         step=5000.0,
-        # format ="{x:,.2f}",
         help="Your current monthly expenses that will need to be covered during retirement. This will be adjusted for inflation in the projection."
     )
     
