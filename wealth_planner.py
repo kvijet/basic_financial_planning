@@ -93,143 +93,142 @@ with st.sidebar:
 # Main content area
 col1, col2 = st.columns([2, 1])
 
-with col2:
-    st.subheader("Summary")
-    st.info(f"""
-    **Retirement Age:** {retirement_age}  
-    **Years to Retirement:** {retirement_age - current_age}  
-    **Planning Horizon:** {planning_horizon} years  
-    **Starting Corpus:** {current_assets:,.2f}  
-    **Monthly Contribution:** {monthly_contribution:,.2f}  
-    **Monthly Expense:** {current_monthly_expense:,.2f}  
-    **Expected Annual Return:** {expected_annual_return*100:.2f}%  
-    **Expected Inflation:** {expected_inflation*100:.2f}%
-    """)
+
+st.subheader("Summary")
+st.info(f"""
+**Retirement Age:** {retirement_age}  
+**Years to Retirement:** {retirement_age - current_age}  
+**Planning Horizon:** {planning_horizon} years  
+**Starting Corpus:** {current_assets:,.2f}  
+**Monthly Contribution:** {monthly_contribution:,.2f}  
+**Monthly Expense:** {current_monthly_expense:,.2f}  
+**Expected Annual Return:** {expected_annual_return*100:.2f}%  
+**Expected Inflation:** {expected_inflation*100:.2f}%
+""")
+
+if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
+    st.switch_page("pages/1_SIP_Calculator.py")
+
+#Calculate and display results
+if calculate_button:
     
-    if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
-        st.switch_page("pages/1_SIP_Calculator.py")
+    st.subheader("Wealth Projection Table")        
 
-with col1:
-    #Calculate and display results
-    if calculate_button:
-        
-        st.subheader("Wealth Projection Table")        
+    total_months = (planning_horizon + 1) * 12
+    retirement_month = (retirement_age - current_age + 1) * 12
 
-        total_months = (planning_horizon + 1) * 12
-        retirement_month = (retirement_age - current_age + 1) * 12
+    wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
+    
+    wealth_df['Month'] = range(1, total_months + 1)
 
-        wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
-        
-        wealth_df['Month'] = range(1, total_months + 1)
+    ages=[]
+    contribution=[]
+    contr = monthly_contribution
+    monthly_exp = current_monthly_expense
+    exp =[]
 
-        ages=[]
-        contribution=[]
-        contr = monthly_contribution
-        monthly_exp = current_monthly_expense
-        exp =[]
+    for m in wealth_df.Month:
+            if m > retirement_month:
+                exp.append(monthly_exp)
 
-        for m in wealth_df.Month:
-                if m > retirement_month:
-                    exp.append(monthly_exp)
-
-                elif m <= retirement_month:
-                    exp.append(0)
-                    
-
-                monthly_exp *= ((1 + expected_inflation)**(1/12))
-
-                if m == 1:
-                    age = current_age
-                    contr = monthly_contribution
-
-                elif m % 12 == 1:
-                    age += 1
-                    if m <= retirement_month:
-                        contr *= (1 + annual_contribution_increase)
-                    elif m > retirement_month:
-                        contr = 0
-
-                # else keep the same age
-                ages.append(age)
-                contribution.append(contr)
+            elif m <= retirement_month:
+                exp.append(0)
                 
-        wealth_df['Age']=ages
-        wealth_df['Contribution']=contribution
-        wealth_df['Expense']=exp
 
-        balance = current_assets
+            monthly_exp *= ((1 + expected_inflation)**(1/12))
 
-        for i in range(len(wealth_df)):
-            # Opening balance
-            wealth_df.at[i, 'Opening Balance'] = balance
+            if m == 1:
+                age = current_age
+                contr = monthly_contribution
+
+            elif m % 12 == 1:
+                age += 1
+                if m <= retirement_month:
+                    contr *= (1 + annual_contribution_increase)
+                elif m > retirement_month:
+                    contr = 0
+
+            # else keep the same age
+            ages.append(age)
+            contribution.append(contr)
             
-            # Return earned
-            wealth_df.at[i, 'Return Earned'] = balance * expected_monthly_return
-            
-            # Closing balance
-            bal = balance + wealth_df.at[i, 'Return Earned'] \
-                        + wealth_df.at[i, 'Contribution'] \
-                        - wealth_df.at[i, 'Expense']
-            
-            if bal < 0:
-                wealth_df.at[i, 'Closing Balance'] = 0
-                wealth_df.at[i, 'Deficit'] = -bal
-            else:
-                wealth_df.at[i, 'Closing Balance'] = bal
-                wealth_df.at[i, 'Deficit'] = 0
-            
-            # Update balance for next iteration
-            balance = wealth_df.at[i, 'Closing Balance']
+    wealth_df['Age']=ages
+    wealth_df['Contribution']=contribution
+    wealth_df['Expense']=exp
 
-        wealth_df['Net Cash Flow'] = wealth_df['Contribution'] - wealth_df['Expense']
+    balance = current_assets
 
-        wealth_plan_display = wealth_df.copy()
-        wealth_plan_display.drop(columns=['Net Cash Flow'], inplace=True)
-        wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
+    for i in range(len(wealth_df)):
+        # Opening balance
+        wealth_df.at[i, 'Opening Balance'] = balance
+        
+        # Return earned
+        wealth_df.at[i, 'Return Earned'] = balance * expected_monthly_return
+        
+        # Closing balance
+        bal = balance + wealth_df.at[i, 'Return Earned'] \
+                    + wealth_df.at[i, 'Contribution'] \
+                    - wealth_df.at[i, 'Expense']
+        
+        if bal < 0:
+            wealth_df.at[i, 'Closing Balance'] = 0
+            wealth_df.at[i, 'Deficit'] = -bal
+        else:
+            wealth_df.at[i, 'Closing Balance'] = bal
+            wealth_df.at[i, 'Deficit'] = 0
+        
+        # Update balance for next iteration
+        balance = wealth_df.at[i, 'Closing Balance']
 
-        st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
+    wealth_df['Net Cash Flow'] = wealth_df['Contribution'] - wealth_df['Expense']
+
+    wealth_plan_display = wealth_df.copy()
+    wealth_plan_display.drop(columns=['Net Cash Flow'], inplace=True)
+    wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
+
+    st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
 # Visualization of Net Cash Flow and Closing Balance
-        # wealth_vis= wealth_df.copy()
-        # wealth_vis['Closing Balance'] = wealth_vis['Closing Balance'].fillna(0)
-        # wealth_vis['Net Cash Flow'] = wealth_vis['Net Cash Flow'].fillna(0)
+    # wealth_vis= wealth_df.copy()
+    # wealth_vis['Closing Balance'] = wealth_vis['Closing Balance'].fillna(0)
+    # wealth_vis['Net Cash Flow'] = wealth_vis['Net Cash Flow'].fillna(0)
 
-        # fig, ax = plt.subplots(figsize=(12,6))
+    # fig, ax = plt.subplots(figsize=(12,6))
 
-        # # Line plot for Net Cash Flow
-        # ax.plot(wealth_vis['Month'], wealth_vis['Net Cash Flow'], 
-        #         color='blue', label='Net Cash Flow')
+    # # Line plot for Net Cash Flow
+    # ax.plot(wealth_vis['Month'], wealth_vis['Net Cash Flow'], 
+    #         color='blue', label='Net Cash Flow')
 
-        # # Area plot for Closing Balance
-        # ax.fill_between(wealth_vis['Month'], wealth_vis['Closing Balance'], 
-        #                 color='green', alpha=0.3, label='Closing Balance')
+    # # Area plot for Closing Balance
+    # ax.fill_between(wealth_vis['Month'], wealth_vis['Closing Balance'], 
+    #                 color='green', alpha=0.3, label='Closing Balance')
 
-        # # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
-        # ax.set_xticks(range(0, 721, 24))
+    # # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
+    # ax.set_xticks(range(0, 721, 24))
 
-        # # Labels and title
-        # ax.set_xlabel("Month")
-        # ax.set_ylabel("Value")
-        # ax.set_title("Net Cash Flow vs Closing Balance")
-        # ax.legend()
+    # # Labels and title
+    # ax.set_xlabel("Month")
+    # ax.set_ylabel("Value")
+    # ax.set_title("Net Cash Flow vs Closing Balance")
+    # ax.legend()
 
-        # # Render in Streamlit
-        # st.pyplot(fig)
+    # # Render in Streamlit
+    # st.pyplot(fig)
 
-        # Download option
-        csv = wealth_plan_display.to_csv(index=False)
-        st.download_button(
-            label="Download Projection (CSV)",
-            data=csv,
-            file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
-            mime="text/csv",
-            on_click="ignore"
-        )        
+    # Download option
+    csv = wealth_plan_display.to_csv(index=False)
+    st.download_button(
+        label="Download Projection (CSV)",
+        data=csv,
+        file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
+        mime="text/csv",
+        on_click="ignore"
+    )        
 
         # # Initialize lists for each column
         # months = []
