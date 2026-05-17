@@ -184,6 +184,7 @@ with col1:
         wealth_df['Net Cash Flow'] = wealth_df['Contribution'] - wealth_df['Expense']
 
         wealth_plan_display = wealth_df.copy()
+        wealth_plan_display.drop(columns=['Net Cash Flow'], inplace=True)
         wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
         wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
         wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
