@@ -328,7 +328,8 @@ with col1:
             label="Download Projection (CSV)",
             data=csv,
             file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
-            mime="text/csv"
+            mime="text/csv",
+            on_click="ignore"
         )
     else:
         st.info("👈 Configure your parameters in the sidebar and click 'Calculate Projection' to see the results.")
