@@ -209,7 +209,7 @@ with col1:
                     age = current_age
                     contr = monthly_contribution
 
-                elif m % 12 == 0:
+                elif m % 12 == 1:
                     age += 1
                     if m <= retirement_month:
                         contr *= (1 + annual_contribution_increase)
