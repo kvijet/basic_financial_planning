@@ -197,7 +197,7 @@ with col1:
         total_months = planning_horizon * 12
         retirement_month = (retirement_age - current_age + 1) * 12
 
-        wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Running Expense','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
+        wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
         wealth_df['Month'] = range(1, total_months + 1)
 
         ages=[]
@@ -234,6 +234,30 @@ with col1:
         wealth_df['Age']=ages
         wealth_df['Contribution']=contribution
         wealth_df['Expense']=exp
+
+        balance = current_assets
+
+        for i in range(len(wealth_df)):
+            # Opening balance
+            wealth_df.at[i, 'Opening Balance'] = balance
+            
+            # Return earned
+            wealth_df.at[i, 'Return Earned'] = balance * expected_monthly_return
+            
+            # Closing balance
+            bal = balance + wealth_df.at[i, 'Return Earned'] \
+                        + wealth_df.at[i, 'Contribution'] \
+                        - wealth_df.at[i, 'Expense']
+            
+            if bal < 0:
+                wealth_df.at[i, 'Closing Balance'] = 0
+                wealth_df.at[i, 'Deficit'] = -bal
+            else:
+                wealth_df.at[i, 'Closing Balance'] = bal
+                wealth_df.at[i, 'Deficit'] = 0
+            
+            # Update balance for next iteration
+            balance = wealth_df.at[i, 'Closing Balance']
 
 
         st.dataframe(wealth_df, use_container_width=True, hide_index=True)
