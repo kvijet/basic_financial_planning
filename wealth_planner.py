@@ -94,20 +94,28 @@ with st.sidebar:
 col1, col2 = st.columns([2, 1])
 
 
-st.subheader("Summary")
-st.info(f"""
-**Retirement Age:** {retirement_age}  
-**Years to Retirement:** {retirement_age - current_age}  
-**Planning Horizon:** {planning_horizon} years  
-**Starting Corpus:** {current_assets:,.2f}  
-**Monthly Contribution:** {monthly_contribution:,.2f}  
-**Monthly Expense:** {current_monthly_expense:,.2f}  
-**Expected Annual Return:** {expected_annual_return*100:.2f}%  
-**Expected Inflation:** {expected_inflation*100:.2f}%
-""")
-
 #Calculate and display results
 if calculate_button:
+
+    st.subheader("Summary")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.info(f"""
+        **Retirement Age:** {retirement_age}  
+        **Years to Retirement:** {retirement_age - current_age}  
+        **Planning Horizon:** {planning_horizon} years  
+        **Starting Corpus:** {current_assets:,.2f}  
+
+        """)
+
+    with col2:
+        st.info(f"""
+        **Monthly Contribution:** {monthly_contribution:,.2f}  
+        **Monthly Expense:** {current_monthly_expense:,.2f}  
+        **Expected Annual Return:** {expected_annual_return*100:.2f}%  
+        **Expected Inflation:** {expected_inflation*100:.2f}%
+        """)        
     
     st.subheader("Wealth Projection Table")        
 
