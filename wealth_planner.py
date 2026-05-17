@@ -193,31 +193,32 @@ with col1:
 
         st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
-        wealth_vis= wealth_df.copy()
-        wealth_vis['Closing Balance'] = wealth_vis['Closing Balance'].fillna(0)
-        wealth_vis['Net Cash Flow'] = wealth_vis['Net Cash Flow'].fillna(0)
+# Visualization of Net Cash Flow and Closing Balance
+        # wealth_vis= wealth_df.copy()
+        # wealth_vis['Closing Balance'] = wealth_vis['Closing Balance'].fillna(0)
+        # wealth_vis['Net Cash Flow'] = wealth_vis['Net Cash Flow'].fillna(0)
 
-        fig, ax = plt.subplots(figsize=(12,6))
+        # fig, ax = plt.subplots(figsize=(12,6))
 
-        # Line plot for Net Cash Flow
-        ax.plot(wealth_vis['Month'], wealth_vis['Net Cash Flow'], 
-                color='blue', label='Net Cash Flow')
+        # # Line plot for Net Cash Flow
+        # ax.plot(wealth_vis['Month'], wealth_vis['Net Cash Flow'], 
+        #         color='blue', label='Net Cash Flow')
 
-        # Area plot for Closing Balance
-        ax.fill_between(wealth_vis['Month'], wealth_vis['Closing Balance'], 
-                        color='green', alpha=0.3, label='Closing Balance')
+        # # Area plot for Closing Balance
+        # ax.fill_between(wealth_vis['Month'], wealth_vis['Closing Balance'], 
+        #                 color='green', alpha=0.3, label='Closing Balance')
 
-        # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
-        ax.set_xticks(range(0, 721, 24))
+        # # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
+        # ax.set_xticks(range(0, 721, 24))
 
-        # Labels and title
-        ax.set_xlabel("Month")
-        ax.set_ylabel("Value")
-        ax.set_title("Net Cash Flow vs Closing Balance")
-        ax.legend()
+        # # Labels and title
+        # ax.set_xlabel("Month")
+        # ax.set_ylabel("Value")
+        # ax.set_title("Net Cash Flow vs Closing Balance")
+        # ax.legend()
 
-        # Render in Streamlit
-        st.pyplot(fig)
+        # # Render in Streamlit
+        # st.pyplot(fig)
 
         # Download option
         csv = wealth_plan_display.to_csv(index=False)
