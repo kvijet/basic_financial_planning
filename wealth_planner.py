@@ -66,7 +66,7 @@ with st.sidebar:
         min_value=0.0,
         max_value=100.0,
         value=10.0,
-        step=1,
+        step=1.0,
         help="The expected annual return on your investments."
     ) / 100
     expected_monthly_return = (1 + expected_annual_return) ** (1 / 12) - 1
@@ -84,7 +84,7 @@ with st.sidebar:
         min_value=0.0,
         max_value=20.0,
         value=5.0,
-        step=1
+        step=1.0
     ) / 100
 
     # Calculate Projection button at the end of sidebar
