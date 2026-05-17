@@ -40,7 +40,7 @@ with st.sidebar:
         "Current Assets",
         min_value=0.0,
         value=1000000.0,
-        step=1000.0,
+        step=10000.0,
         help="The total value of your current savings and investments that will be used as the starting point for your wealth projection."
     )
     
@@ -57,7 +57,7 @@ with st.sidebar:
         min_value=0.0,
         max_value=100.0,
         value=3.0,
-        step=0.1,
+        step=1,
         help="The percentage by which your monthly contribution will increase each year."
     ) / 100
     
@@ -66,7 +66,7 @@ with st.sidebar:
         min_value=0.0,
         max_value=100.0,
         value=10.0,
-        step=0.1,
+        step=1,
         help="The expected annual return on your investments."
     ) / 100
     expected_monthly_return = (1 + expected_annual_return) ** (1 / 12) - 1
@@ -84,7 +84,7 @@ with st.sidebar:
         min_value=0.0,
         max_value=20.0,
         value=5.0,
-        step=0.1
+        step=1
     ) / 100
 
     # Calculate Projection button at the end of sidebar
