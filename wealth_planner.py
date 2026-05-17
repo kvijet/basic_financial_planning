@@ -200,6 +200,8 @@ with col1:
         wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Running Expense','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
         wealth_df['Month'] = range(1, total_months + 1)
 
+        st.dataframe(wealth_df, use_container_width=True, hide_index=True)
+
         # # Initialize lists for each column
         # months = []
         # opening_balance = []
@@ -274,36 +276,36 @@ with col1:
         # wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
         # wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
-        # After wealth_plan dataframe is created
-        final_balance = wealth_plan["Closing Balance"].iloc[-1]
-        run_out_months = wealth_plan[wealth_plan["Closing Balance"] == 0]["Month"]
+    #     # After wealth_plan dataframe is created
+    #     final_balance = wealth_plan["Closing Balance"].iloc[-1]
+    #     run_out_months = wealth_plan[wealth_plan["Closing Balance"] == 0]["Month"]
 
-        if not run_out_months.empty:
-            run_out_age = current_age + run_out_months.iloc[0] // 12
-            years_before_end = planning_horizon - (run_out_months.iloc[0] // 12)
-            st.warning(
-                f"⚠️ You will run out of money at age {run_out_age}, "
-                f"which is {years_before_end} years before the end of your plan."
-            )
-        else:
-            st.success(
-                f"✅ At the end of {planning_horizon} years, "
-                f"you will still have {final_balance:,.2f} left."
-            )
-
-
-        # Display in Streamlit
-        st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
+    #     if not run_out_months.empty:
+    #         run_out_age = current_age + run_out_months.iloc[0] // 12
+    #         years_before_end = planning_horizon - (run_out_months.iloc[0] // 12)
+    #         st.warning(
+    #             f"⚠️ You will run out of money at age {run_out_age}, "
+    #             f"which is {years_before_end} years before the end of your plan."
+    #         )
+    #     else:
+    #         st.success(
+    #             f"✅ At the end of {planning_horizon} years, "
+    #             f"you will still have {final_balance:,.2f} left."
+    #         )
 
 
-        # Download option
-        csv = wealth_plan_display.to_csv(index=False)
-        st.download_button(
-            label="Download Projection (CSV)",
-            data=csv,
-            file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
-            mime="text/csv",
-            on_click="ignore"
-        )
-    else:
-        st.info("👈 Configure your parameters in the sidebar and click 'Calculate Projection' to see the results.")
+    #     # Display in Streamlit
+    #     st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
+
+
+    #     # Download option
+    #     csv = wealth_plan_display.to_csv(index=False)
+    #     st.download_button(
+    #         label="Download Projection (CSV)",
+    #         data=csv,
+    #         file_name=f"wealth_projection_{datetime.now().strftime('%Y%m%d')}.csv",
+    #         mime="text/csv",
+    #         on_click="ignore"
+    #     )
+    # else:
+    #     st.info("👈 Configure your parameters in the sidebar and click 'Calculate Projection' to see the results.")
