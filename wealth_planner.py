@@ -218,10 +218,10 @@ with col1:
 
                 # else keep the same age
                 ages.append(age)
-                contributions.append(contr)
+                contribution.append(contr)
 
         wealth_df['Age']=ages
-        wealth_df['Contribution']=contributions
+        wealth_df['Contribution']=contribution
 
 
         st.dataframe(wealth_df, use_container_width=True, hide_index=True)
