@@ -203,8 +203,18 @@ with col1:
         ages=[]
         contribution=[]
         contr = monthly_contribution
+        monthly_exp = current_monthly_expense
+        exp =[]
 
         for m in wealth_df.Month:
+                if m > retirement_month:
+                    exp.append(monthly_exp)
+
+                elif m <= retirement_month:
+                    exp.append(0)
+
+                monthly_exp *= (1 + expected_inflation/12)
+
                 if m == 1:
                     age = current_age
                     contr = monthly_contribution
@@ -219,9 +229,10 @@ with col1:
                 # else keep the same age
                 ages.append(age)
                 contribution.append(contr)
-
+                
         wealth_df['Age']=ages
         wealth_df['Contribution']=contribution
+        wealth_df['Expense']=exp
 
 
         st.dataframe(wealth_df, use_container_width=True, hide_index=True)
