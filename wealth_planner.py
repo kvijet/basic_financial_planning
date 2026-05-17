@@ -211,7 +211,8 @@ with col1:
                     exp.append(monthly_exp)
 
                 elif m <= retirement_month:
-                    exp.append(0)
+                    # exp.append(0)
+                    exp.append(monthly_exp)
 
                 monthly_exp *= ((1 + expected_inflation)**(1/12))
 
