@@ -213,7 +213,7 @@ with col1:
                 elif m <= retirement_month:
                     exp.append(0)
 
-                monthly_exp *= (1 + expected_inflation/12)
+                monthly_exp *= ((1 + expected_inflation)^(1/12))
 
                 if m == 1:
                     age = current_age
