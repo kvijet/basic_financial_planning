@@ -195,12 +195,11 @@ if calculate_button:
     wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
     wealth_plan_display['Monthly Deficit'] = wealth_plan_display['Monthly Deficit'].apply(lambda x: f"{x:,.2f}")
 
-    summary_df=pd.DataFrame()
-
     if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
-        summary_df=pd.concat(summary_df,wealth_df[wealth_df['Closing Balance'] == 0].head(1))
+        summary_df=pd.concat(wealth_df[wealth_df['Closing Balance'] == 0].head(1),pd.concat([summary_df, wealth_df.tail(1)]))
     
-    summary_df = pd.concat([summary_df, wealth_df.tail(1)])
+    else:
+        summary_df = wealth_df.tail(1)
 
     if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
         st.warning(f"Based on the current parameters, your wealth will be depleted by age {int(wealth_df[wealth_df['Closing Balance'] == 0].head(1)['Age'].values[0])}. Consider adjusting your contributions, expected returns, or expenses to ensure a more sustainable plan.")   
