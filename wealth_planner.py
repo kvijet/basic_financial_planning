@@ -200,6 +200,30 @@ with col1:
         wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Running Expense','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
         wealth_df['Month'] = range(1, total_months + 1)
 
+        ages=[]
+        contribution=[]
+        contr = monthly_contribution
+
+        for m in wealth_df.Month:
+                if m == 1:
+                    age = current_age
+                    contr = monthly_contribution
+
+                elif m % 12 == 0:
+                    age += 1
+                    if m <= retirement_month:
+                        contr *= (1 + annual_contribution_increase)
+                    elif m > retirement_month:
+                        contr = 0
+
+                # else keep the same age
+                ages.append(age)
+                contributions.append(contr)
+
+        wealth_df['Age']=ages
+        wealth_df['Contribution']=contributions
+
+
         st.dataframe(wealth_df, use_container_width=True, hide_index=True)
 
         # # Initialize lists for each column
