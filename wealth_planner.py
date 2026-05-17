@@ -112,13 +112,8 @@ with col2:
         st.switch_page("pages/1_SIP_Calculator.py")
 
 with col1:
-    # Calculate and display results
+    Calculate and display results
     if calculate_button:
-        df_results = calculate_wealth_plan(
-            current_age, retirement_age, planning_horizon, current_assets,
-            monthly_contribution, annual_contribution_increase, expected_monthly_return,
-            current_monthly_expense, expected_inflation
-        )
         
         st.subheader("Wealth Projection Table")        
 
