@@ -195,7 +195,7 @@ with col1:
         st.subheader("Wealth Projection Table")        
 
         total_months = planning_horizon * 12
-        retirement_month = (retirement_age - current_age) * 12
+        retirement_month = (retirement_age - current_age + 1) * 12
 
         wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Running Expense','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
         wealth_df['Month'] = range(1, total_months + 1)
