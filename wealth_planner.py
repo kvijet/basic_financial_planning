@@ -267,7 +267,7 @@ with col1:
         wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
         wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
-        st.dataframe(wealth_df, use_container_width=True, hide_index=True)
+        st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
         # Download option
         csv = wealth_plan_display.to_csv(index=False)
