@@ -32,7 +32,7 @@ with st.sidebar:
         max_value=100,
         value=60,
         step=1,
-        help="The total number of years you want to plan for. This should ideally be at least as long as the number of years from your current age to your expected lifespan.""
+        help="The total number of years you want to plan for. This should ideally be at least as long as the number of years from your current age to your expected lifespan."
     )
     
     current_assets = st.number_input(
