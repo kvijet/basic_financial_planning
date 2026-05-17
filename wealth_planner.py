@@ -22,7 +22,8 @@ with st.sidebar:
         min_value=current_age + 1,
         max_value=100,
         value=60,
-        step=1
+        step=1,
+        help="The age until you plan to work or contribute to your wealth. After this age, contributions will stop and expenses will start."
     )
     
     planning_horizon = st.number_input(
@@ -30,21 +31,26 @@ with st.sidebar:
         min_value=1,
         max_value=100,
         value=60,
-        step=1
+        step=1,
+        help="The total number of years you want to plan for. This should ideally be at least as long as the number of years from your current age to your expected lifespan.""
     )
     
     current_assets = st.number_input(
         "Current Assets",
         min_value=0.0,
         value=1000000.0,
-        step=1000.0
+        step=1000.0,
+        format ="%0.2f",
+        help="The total value of your current savings and investments that will be used as the starting point for your wealth projection."
     )
     
     monthly_contribution = st.number_input(
         "Monthly Contribution",
         min_value=0.0,
         value=50000.0,
-        step=5000.0
+        step=5000.0,
+        format ="%0.2f",
+        help="The amount you plan to contribute to your wealth every month until retirement. This can be adjusted for annual increases in the next input."
     )
     
     annual_contribution_increase = st.number_input(
@@ -52,7 +58,8 @@ with st.sidebar:
         min_value=0.0,
         max_value=100.0,
         value=3.0,
-        step=0.1
+        step=0.1,
+        help="The percentage by which your monthly contribution will increase each year."
     ) / 100
     
     expected_annual_return = st.number_input(
@@ -60,7 +67,8 @@ with st.sidebar:
         min_value=0.0,
         max_value=100.0,
         value=10.0,
-        step=0.1
+        step=0.1,
+        help="The expected annual return on your investments."
     ) / 100
     expected_monthly_return = (1 + expected_annual_return) ** (1 / 12) - 1
     
@@ -68,7 +76,9 @@ with st.sidebar:
         "Current Monthly Expense",
         min_value=0.0,
         value=75000.0,
-        step=5000.0
+        step=5000.0,
+        format ="%0.2f",
+        help="Your current monthly expenses that will need to be covered during retirement. This will be adjusted for inflation in the projection."
     )
     
     expected_inflation = st.number_input(
