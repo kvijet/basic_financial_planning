@@ -197,79 +197,82 @@ with col1:
         total_months = planning_horizon * 12
         retirement_month = (retirement_age - current_age) * 12
 
-        # Initialize lists for each column
-        months = []
-        opening_balance = []
-        expenses = []
-        returns = []
-        contributions = []
-        closing_balance = []
-        deficit = []
+        wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Running Expense','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
+        wealth_df['Month'] = range(1, total_months + 1)
 
-        # Start with current assets
-        balance = current_assets
-        monthly_contr = monthly_contribution
+        # # Initialize lists for each column
+        # months = []
+        # opening_balance = []
+        # expenses = []
+        # returns = []
+        # contributions = []
+        # closing_balance = []
+        # deficit = []
 
-        for m in range(1, total_months + 1):
-            months.append(m)
-            opening_balance.append(balance)
+        # # Start with current assets
+        # balance = current_assets
+        # monthly_contr = monthly_contribution
 
-            # Expense logic
-            if m <= retirement_month:
-                exp = 0
-            else:
-                # Inflation adjusted expense at retirement start
-                months_to_retirement = retirement_month
-                base_exp = current_monthly_expense * ((1 + expected_inflation/12) ** months_to_retirement)
-                # Then grow each month with inflation
-                exp = base_exp * ((1 + expected_inflation/12) ** (m - retirement_month - 1))
-            expenses.append(exp)
+        # for m in range(1, total_months + 1):
+        #     months.append(m)
+        #     opening_balance.append(balance)
 
-            # Contribution logic
-            if m <= retirement_month:
-                # Step-up every 12 months
-                if m % 12 == 1 and m > 1:
-                    monthly_contr *= (1 + annual_contribution_increase)
-                contr = monthly_contr
-            else:
-                contr = 0
-            contributions.append(contr)
+        #     # Expense logic
+        #     if m <= retirement_month:
+        #         exp = 0
+        #     else:
+        #         # Inflation adjusted expense at retirement start
+        #         months_to_retirement = retirement_month
+        #         base_exp = current_monthly_expense * ((1 + expected_inflation/12) ** months_to_retirement)
+        #         # Then grow each month with inflation
+        #         exp = base_exp * ((1 + expected_inflation/12) ** (m - retirement_month - 1))
+        #     expenses.append(exp)
 
-            # Return earned
-            ret = (balance - exp) * expected_monthly_return
-            returns.append(ret)
+        #     # Contribution logic
+        #     if m <= retirement_month:
+        #         # Step-up every 12 months
+        #         if m % 12 == 1 and m > 1:
+        #             monthly_contr *= (1 + annual_contribution_increase)
+        #         contr = monthly_contr
+        #     else:
+        #         contr = 0
+        #     contributions.append(contr)
 
-            # Closing balance
-            bal = balance - exp + ret + contr
-            if bal < 0:
-                deficit_val = -bal
-                bal = 0
-            else:
-                deficit_val = 0
-            closing_balance.append(bal)
-            deficit.append(deficit_val)
+        #     # Return earned
+        #     ret = (balance - exp) * expected_monthly_return
+        #     returns.append(ret)
 
-            # Update balance for next month
-            balance = bal
+        #     # Closing balance
+        #     bal = balance - exp + ret + contr
+        #     if bal < 0:
+        #         deficit_val = -bal
+        #         bal = 0
+        #     else:
+        #         deficit_val = 0
+        #     closing_balance.append(bal)
+        #     deficit.append(deficit_val)
 
-        # Create DataFrame
-        wealth_plan = pd.DataFrame({
-            "Month": months,
-            "Opening Balance": opening_balance,
-            "Expense": expenses,
-            "Return Earned": returns,
-            "Contribution": contributions,
-            "Closing Balance": closing_balance,
-            "Deficit": deficit
-        })
+        #     # Update balance for next month
+        #     balance = bal
 
-        wealth_plan_display = wealth_plan.copy()
-        wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
-        wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
+        # # Create DataFrame
+        # wealth_plan = pd.DataFrame({
+        #     "Month": months,
+        #     "Opening Balance": opening_balance,
+        #     "Expense": expenses,
+        #     "Return Earned": returns,
+        #     "Contribution": contributions,
+        #     "Closing Balance": closing_balance,
+        #     "Deficit": deficit
+        # })
+
+        # wealth_plan_display = wealth_plan.copy()
+        # wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
+        # wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
+        # wealth_plan_display['Return Earned'] = wealth_plan_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
+        # wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
+        # wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
+        # wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
         # After wealth_plan dataframe is created
         final_balance = wealth_plan["Closing Balance"].iloc[-1]
