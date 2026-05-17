@@ -1,7 +1,5 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import altair as alt
 from datetime import datetime
 
 st.set_page_config(page_title="Wealth Planning Calculator", layout="wide")
@@ -323,67 +321,6 @@ with col1:
         # Display in Streamlit
         st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
-        # --- What-If Scenarios ---
-        def run_plan(monthly_contr, monthly_exp, retirement_age_override=None):
-            total_months = planning_horizon * 12
-            retirement_month = ((retirement_age_override or retirement_age) - current_age) * 12
-            balance = current_assets
-            contr = monthly_contr
-            for m in range(1, total_months + 1):
-                # Expense
-                if m <= retirement_month:
-                    exp = 0
-                else:
-                    months_to_retirement = retirement_month
-                    base_exp = monthly_exp * ((1 + expected_inflation/12) ** months_to_retirement)
-                    exp = base_exp * ((1 + expected_inflation/12) ** (m - retirement_month - 1))
-                # Contribution
-                if m <= retirement_month:
-                    if m % 12 == 1 and m > 1:
-                        contr *= (1 + annual_contribution_increase)
-                    c = contr
-                else:
-                    c = 0
-                # Return
-                ret = (balance - exp) * expected_monthly_return
-                balance = balance - exp + ret + c
-                if balance < 0:
-                    return balance, m  # deficit month
-            return balance, None  # survived
-
-        # 1. Max sustainable expense with same contribution
-        low, high = 0, int(current_monthly_expense)
-        while low < high:
-            mid = (low + high + 1) // 2
-            bal, deficit_month = run_plan(monthly_contribution, mid)
-            if deficit_month is None:  # survived
-                low = mid
-            else:
-                high = mid - 1
-        sustainable_expense = low
-
-        # 2. Required contribution to sustain current expense
-        contr = int(monthly_contribution)
-        while True:
-            bal, deficit_month = run_plan(contr, current_monthly_expense)
-            if deficit_month is None:
-                break
-            contr += 1
-        required_contribution = contr
-
-        # 3. Adjusted retirement age
-        bal, deficit_month = run_plan(monthly_contribution, current_monthly_expense)
-        if deficit_month is None and bal > 0:
-            new_ret_age = retirement_age - 1
-        else:
-            new_ret_age = retirement_age + 1
-
-        # --- Display results ---
-        st.subheader("🔮 What-If Scenarios")
-        st.write(f"1️⃣ With the same contribution, the maximum sustainable monthly expense is **{sustainable_expense:,}**")
-        st.write(f"2️⃣ To sustain your current expense, you need a monthly contribution of **{required_contribution:,}** (with step-up applied)")
-        st.write(f"3️⃣ If you keep the same expense and contribution, you should retire at age **{new_ret_age}**")
-        
         st.divider()
         if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
             st.switch_page("pages/1_SIP_Calculator.py")
