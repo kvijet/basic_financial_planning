@@ -106,9 +106,6 @@ st.info(f"""
 **Expected Inflation:** {expected_inflation*100:.2f}%
 """)
 
-if st.button("📊 Calculate SIP for a Goal", use_container_width=True):
-    st.switch_page("pages/1_SIP_Calculator.py")
-
 #Calculate and display results
 if calculate_button:
     
