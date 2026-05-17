@@ -219,28 +219,42 @@ if calculate_button:
 
 
 # Visualization of Net Cash Flow and Closing Balance
-    wealth_vis= wealth_df.copy()
-    wealth_vis['Closing Balance'] = wealth_vis['Closing Balance'].fillna(0)
-    wealth_vis['Net Cash Flow'] = wealth_vis['Net Cash Flow'].fillna(0)
 
-    fig, ax = plt.subplots(figsize=(12,6))
+# "Month", "Net Cash Flow", "Closing Balance"
+
+    fig, ax = plt.subplots(figsize=(10, 6))
 
     # Line plot for Net Cash Flow
-    ax.plot(wealth_vis['Month'], wealth_vis['Net Cash Flow'], 
-            color='blue', label='Net Cash Flow')
+    ax.plot(
+        wealth_df["Month"],
+        wealth_df["Net Cash Flow"],
+        label="Net Cash Flow",
+        color="blue",
+        linewidth=2
+    )
 
     # Area plot for Closing Balance
-    ax.fill_between(wealth_vis['Month'], wealth_vis['Closing Balance'], 
-                    color='green', alpha=0.3, label='Closing Balance')
+    ax.fill_between(
+        wealth_df["Month"],
+        wealth_df["Closing Balance"],
+        color="green",
+        alpha=0.3,
+        label="Closing Balance"
+    )
 
-    # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
-    ax.set_xticks(range(0, 721, 24))
+    # X-axis ticks every 24 months
+    ax.set_xticks(range(0, wealth_df["Month"].max() + 1, 24))
 
     # Labels and title
     ax.set_xlabel("Month")
     ax.set_ylabel("Value")
-    ax.set_title("Net Cash Flow vs Closing Balance")
+    ax.set_title("Wealth Planning: Cash Flow vs Closing Balance")
+
+    # Grid and legend
+    ax.grid(True, linestyle="--", alpha=0.7)
     ax.legend()
+
+# End of visualization code
 
     # Render in Streamlit
     st.subheader("Planning Horizon Visualization")
