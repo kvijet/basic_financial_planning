@@ -194,6 +194,7 @@ if calculate_button:
     wealth_plan_display['Contribution'] = wealth_plan_display['Contribution'].apply(lambda x: f"{x:,.2f}")
     wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
     wealth_plan_display['Monthly Deficit'] = wealth_plan_display['Monthly Deficit'].apply(lambda x: f"{x:,.2f}")
+    wealth_plan_display["Closing Balance"] = pd.to_numeric(wealth_plan_display["Closing Balance"], errors="coerce")
 
     if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
         summary_df=pd.concat([wealth_df[wealth_df['Closing Balance'] == 0].head(1),wealth_df.tail(1)])
@@ -226,8 +227,8 @@ if calculate_button:
 
     # Line plot for Net Cash Flow
     ax.plot(
-        wealth_df["Month"],
-        wealth_df["Net Cash Flow"],
+        wealth_plan_display["Month"],
+        wealth_plan_display["Net Cash Flow"],
         label="Net Cash Flow",
         color="blue",
         linewidth=2
@@ -235,15 +236,15 @@ if calculate_button:
 
     # Area plot for Closing Balance
     ax.fill_between(
-        wealth_df["Month"],
-        wealth_df["Closing Balance"],
+        wealth_plan_display["Month"],
+        wealth_plan_display["Closing Balance"],
         color="green",
         alpha=0.3,
         label="Closing Balance"
     )
 
     # X-axis ticks every 24 months
-    ax.set_xticks(range(0, wealth_df["Month"].max() + 1, 24))
+    ax.set_xticks(range(0, wealth_plan_display["Month"].max() + 1, 24))
 
     # Labels and title
     ax.set_xlabel("Month")
