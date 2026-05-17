@@ -116,8 +116,7 @@ if calculate_button:
         **Expected Annual Return:** {expected_annual_return*100:.2f}%  
         **Expected Inflation:** {expected_inflation*100:.2f}%
         """)        
-    
-    st.subheader("Wealth Projection Table")        
+           
 
     total_months = (planning_horizon + 1) * 12
     retirement_month = (retirement_age - current_age + 1) * 12
@@ -177,7 +176,7 @@ if calculate_button:
         
         if bal < 0:
             wealth_df.at[i, 'Closing Balance'] = 0
-            wealth_df.at[i, 'Monthly Deficit'] = -bal
+            wealth_df.at[i, 'Monthly Deficit'] = bal
         else:
             wealth_df.at[i, 'Closing Balance'] = bal
             wealth_df.at[i, 'Monthly Deficit'] = 0
@@ -196,6 +195,29 @@ if calculate_button:
     wealth_plan_display['Closing Balance'] = wealth_plan_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
     wealth_plan_display['Monthly Deficit'] = wealth_plan_display['Monthly Deficit'].apply(lambda x: f"{x:,.2f}")
 
+    summary_df=pd.DataFrame()
+
+    if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
+        summary_df=pd.concat(,summary_df,wealth_df[wealth_df['Closing Balance'] == 0].head(1))
+    
+    summary_df = pd.concat([summary_df, wealth_df.tail(1)])
+
+    if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
+        st.warning(f"Based on the current parameters, your wealth will be depleted by age {int(wealth_df[wealth_df['Closing Balance'] == 0].head(1)['Age'].values[0])}. Consider adjusting your contributions, expected returns, or expenses to ensure a more sustainable plan.")   
+
+    summary_df_display = summary_df.copy()
+    summary_df_display.drop(columns=['Net Cash Flow'], inplace=True)
+    summary_df_display['Opening Balance'] = summary_df_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
+    summary_df_display['Expense'] = summary_df_display['Expense'].apply(lambda x: f"{x:,.2f}")
+    summary_df_display['Return Earned'] = summary_df_display['Return Earned'].apply(lambda x: f"{x:,.2f}")
+    summary_df_display['Contribution'] = summary_df_display['Contribution'].apply(lambda x: f"{x:,.2f}")
+    summary_df_display['Closing Balance'] = summary_df_display['Closing Balance'].apply(lambda x: f"{x:,.2f}")
+    summary_df_display['Monthly Deficit'] = summary_df_display['Monthly Deficit'].apply(lambda x: f"{x:,.2f}")
+
+    st.subheader("Wealth Projection Summary") 
+    st.dataframe(summary_df_display, use_container_width=True, hide_index=True)
+
+    st.subheader("Wealth Projection Table")
     st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
 
 # Visualization of Net Cash Flow and Closing Balance
