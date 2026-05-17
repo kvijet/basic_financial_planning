@@ -198,7 +198,7 @@ if calculate_button:
     summary_df=pd.DataFrame()
 
     if len(wealth_df[wealth_df['Closing Balance'] == 0].head(1))>0:
-        summary_df=pd.concat(,summary_df,wealth_df[wealth_df['Closing Balance'] == 0].head(1))
+        summary_df=pd.concat(summary_df,wealth_df[wealth_df['Closing Balance'] == 0].head(1))
     
     summary_df = pd.concat([summary_df, wealth_df.tail(1)])
 
