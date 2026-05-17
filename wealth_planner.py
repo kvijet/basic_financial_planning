@@ -82,88 +82,6 @@ with st.sidebar:
     # Calculate Projection button at the end of sidebar
     calculate_button = st.button("Calculate Projection", type="primary")
 
-
-def calculate_wealth_plan(current_age, retirement_age, planning_horizon, current_assets,
-                         monthly_contribution, annual_contribution_increase, expected_monthly_return,
-                         current_monthly_expense, expected_inflation):
-    """
-    Calculate wealth projection based on input parameters
-    """
-    
-    current_year = datetime.now().year
-    years_to_retirement = retirement_age - current_age
-    
-    # Initialize lists to store results
-    years = []
-    ages = []
-    annual_contributions = []
-    interest_incomes = []
-    year_end_corpuses = []
-    annual_expenses = []
-    
-    corpus = current_assets
-    current_monthly_contrib = monthly_contribution
-    
-    for year_index in range(planning_horizon + 1):
-        year = current_year + year_index
-        age = current_age + year_index
-        
-        # Calculate annual contribution
-        if age < retirement_age:
-            annual_contribution = current_monthly_contrib * 12
-        else:
-            annual_contribution = 0
-        
-        # Calculate annual expense
-        if age < retirement_age:
-            annual_expense = 0
-        else:
-            # Years from current year (for inflation adjustment)
-            years_from_current = age - current_age
-            # Retirement expense = current monthly expense * 12, adjusted for inflation from now until each year
-            # First retirement year: (current_monthly_expense * 12) * (1 + inflation)^years_to_retirement
-            # Next years: continues to grow with inflation
-            annual_expense = (current_monthly_expense * 12) * ((1 + expected_inflation) ** years_from_current)
-        
-        # Calculate interest income on previous year's corpus only with monthly compounding
-        # (Contribution is made at end of year, so no interest on it)
-        interest_income = corpus * (((1 + expected_monthly_return) ** 12) - 1)
-        
-        # Calculate year end corpus
-        # Year end balance = previous year corpus + interest earned + new contribution - annual expenses
-        new_corpus = corpus * ((1 + expected_monthly_return) ** 12) + annual_contribution - annual_expense
-        
-        # Ensure corpus doesn't go negative (but allow it for demonstration)
-        # Uncomment next line if you want to stop at 0
-        # new_corpus = max(0, new_corpus)
-        
-        years.append(year)
-        ages.append(age)
-        annual_contributions.append(annual_contribution)
-        interest_incomes.append(interest_income)
-        year_end_corpuses.append(new_corpus)
-        annual_expenses.append(annual_expense)
-        
-        # Update for next iteration
-        corpus = new_corpus
-        
-        # Increase monthly contribution for next year (but not if retired)
-        if age < retirement_age:
-            current_monthly_contrib = current_monthly_contrib * (1 + annual_contribution_increase)
-    
-    # Create DataFrame
-    df = pd.DataFrame({
-        'Year': years,
-        'Age': ages,
-        'Annual Contribution': annual_contributions,
-        'Interest Income': interest_incomes,
-        'Annual Expense': annual_expenses,
-        'Year End Corpus': year_end_corpuses
-    })
-    
-    return df
-
-
 # Main content area
 col1, col2 = st.columns([2, 1])
 
@@ -194,10 +112,11 @@ with col1:
         
         st.subheader("Wealth Projection Table")        
 
-        total_months = planning_horizon * 12
+        total_months = (planning_horizon + 1) * 12
         retirement_month = (retirement_age - current_age + 1) * 12
 
         wealth_df=pd.DataFrame(columns=['Month','Age','Opening Balance','Expense','Return Earned','Contribution','Closing Balance','Deficit'])
+        
         wealth_df['Month'] = range(1, total_months + 1)
 
         ages=[]
