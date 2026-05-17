@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 st.set_page_config(page_title="Wealth Planning Calculator", layout="wide")
 st.title("Wealth Planning Calculator")
@@ -180,6 +181,8 @@ with col1:
             # Update balance for next iteration
             balance = wealth_df.at[i, 'Closing Balance']
 
+        wealth_df['Net Cash Flow'] = wealth_df['Contribution'] - wealth_df['Expense']
+
         wealth_plan_display = wealth_df.copy()
         wealth_plan_display['Opening Balance'] = wealth_plan_display['Opening Balance'].apply(lambda x: f"{x:,.2f}")
         wealth_plan_display['Expense'] = wealth_plan_display['Expense'].apply(lambda x: f"{x:,.2f}")
@@ -189,6 +192,28 @@ with col1:
         wealth_plan_display['Deficit'] = wealth_plan_display['Deficit'].apply(lambda x: f"{x:,.2f}")
 
         st.dataframe(wealth_plan_display, use_container_width=True, hide_index=True)
+
+        fig, ax = plt.subplots(figsize=(12,6))
+
+        # Line plot for Net Cash Flow
+        ax.plot(wealth_df['Month'], wealth_df['Net Cash Flow'], 
+                color='blue', label='Net Cash Flow')
+
+        # Area plot for Closing Balance
+        ax.fill_between(wealth_df['Month'], wealth_df['Closing Balance'], 
+                        color='green', alpha=0.3, label='Closing Balance')
+
+        # Customize x-axis ticks to show multiples of 24 (24, 48, 72, … up to 720)
+        ax.set_xticks(range(0, 721, 24))
+
+        # Labels and title
+        ax.set_xlabel("Month")
+        ax.set_ylabel("Value")
+        ax.set_title("Net Cash Flow vs Closing Balance")
+        ax.legend()
+
+        # Render in Streamlit
+        st.pyplot(fig)
 
         # Download option
         csv = wealth_plan_display.to_csv(index=False)
